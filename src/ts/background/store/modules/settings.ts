@@ -1,8 +1,7 @@
 import { Action } from 'redux'
 import { Reducer } from 'redux'
-import backgroundLog from 'utils/backgroundLog'
 
-export type ActionTypes = 'LOGIN' | 'LOGOUT'
+export type ActionTypes = 'LOGIN' | 'LOGOUT' | 'LOAD_DATA' | 'LOAD_FORM'
 export type SettingsActions = Action<ActionTypes>
 
 export const setLogin = (payload) => ({
@@ -14,14 +13,28 @@ export const setLogout = () => ({
   type: 'LOGOUT',
 })
 
+export const loadForm = (payload) => ({
+  type: 'LOAD_FORM',
+  payload,
+})
+
+export const loadData = (payload) => ({
+  type: 'LOAD_DATA',
+  payload,
+})
+
 export interface IAppSettings {
   isAuthenticated: boolean
   currentUser: object
+  form: object
+  record: object
 }
 
 const initialState: IAppSettings = {
   isAuthenticated: false,
   currentUser: {},
+  record: {},
+  form: {},
 }
 
 const settings: Reducer<IAppSettings, SettingsActions> = (
@@ -37,7 +50,10 @@ const settings: Reducer<IAppSettings, SettingsActions> = (
       }
     case 'LOGOUT':
       return { ...state, isAuthenticated: false, currentUser: {} }
-
+    case 'LOAD_DATA':
+      return { ...state, record: action.payload }
+    case 'LOAD_FORM':
+      return { ...state, form: action.payload }
     default:
       return state
   }

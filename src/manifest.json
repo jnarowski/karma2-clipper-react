@@ -1,8 +1,8 @@
 {
-  "name": "Web Extension Starter",
-  "author": "ymdevs",
+  "name": "karmaCRM Contact Clipper",
+  "author": "karmacrm",
   "version": "1.0.0",
-  "description": "A web browser extension starter - based on Typescript, React, Redux, Styled-Component, Webpack, and more. Runs on Chrome and Firefox.",
+  "description": "This will help you create contacts from Linkedin, Twitter and Facebook. If the social profile you are viewing already exists in karma, we'll load some helpful information for you from the CRM.",
   "icons": {
     "128": "assets/icon-128.png"
   },
@@ -25,12 +25,15 @@
     ],
     "persistent": true
   },
-  "content": {
-    "js": ["counter.js"],
-    "matches": ["*://*/*"]
-  },
+  "content_scripts": [{
+    "js": ["contentScript.js"],
+    "matches": ["*://*.linkedin.com/*"]
+  }, {
+    "js": ["contentScript.js"],
+    "matches": ["*://*.twitter.com/*"]
+  }],
   "browser_action": {
-    "default_title": "Web Extension Starter",
+    "default_title": "karmaCRM Contact Clipper",
     "default_icon": "assets/icon-48.png",
     "default_popup": "popup.html"
   },

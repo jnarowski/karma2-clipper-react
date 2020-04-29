@@ -1,42 +1,53 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import styled from 'styled-components'
-import { setLogin } from '../../background/store/modules/settings'
-import { postAccountSignin } from '../../services/apiService'
-import backgroundLog from 'utils/backgroundLog'
+import { login } from '../../services/authService'
+import { Button, Input, Form } from 'antd'
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault()
+
     try {
-      const resp = await postAccountSignin({ email, password })
-      backgroundLog(resp)
+      setSaving(true)
+      const resp = await login({ email, password })
       const user = resp.data || {}
+
       setError('')
-      dispatch(setLogin({ currentUser: user }))
+      onLoginSuccess({ user })
+      setSaving(false)
+
       return
     } catch (err) {
       setError('Email or password is invalid.')
-      backgroundLog(err)
+      setSaving(false)
+      console.log(err)
     }
   }
 
   return (
-    <div>
-      <form onSubmit={handleLogin}>
+    <div style={{ padding: 20 }}>
+      <h4>karmaCRM Clipper</h4>
+      <Form onSubmit={handleLogin} layout="vertical">
         {error && <div>{error}</div>}
-        <div>Email</div>
-        <input onChange={(e) => setEmail(e.target.value)} />
-        <div>Password</div>
-        <input onChange={(e) => setPassword(e.target.value)} />
-        <button onClick={handleLogin} type="button">
+        <Form.Item label="Email">
+          <Input autoFocus onChange={(e) => setEmail(e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Password">
+          <Input
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Form.Item>
+        <Button onClick={handleLogin} type="primary" loading={saving}>
           Submit
-        </button>
-      </form>
+        </Button>
+      </Form>
     </div>
   )
 }
